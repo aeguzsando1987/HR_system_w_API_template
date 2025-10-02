@@ -3,10 +3,22 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, relationship
 from datetime import datetime
 
-# Configuración PostgreSQL
-DATABASE_URL = "postgresql://postgres:root@localhost:5432/pt_test"
+# Importar configuración híbrida
+from app.config import settings
 
-engine = create_engine(DATABASE_URL)
+# Configuración de la base de datos usando el sistema híbrido
+DATABASE_URL = settings.get_database_url()
+
+# Crear engine con configuración del pool desde settings
+engine = create_engine(
+    DATABASE_URL,
+    pool_size=settings.db_pool_size,
+    max_overflow=settings.db_max_overflow,
+    pool_timeout=settings.db_pool_timeout,
+    pool_recycle=settings.db_pool_recycle,
+    echo=settings.db_echo_sql  # Mostrar queries SQL en logs si está habilitado
+)
+
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
 
@@ -33,6 +45,10 @@ class User(Base):
 
     # Relación con entities (opcional) - especificando foreign_keys para evitar ambigüedad
     entities = relationship("ExampleEntity", back_populates="user", foreign_keys="ExampleEntity.user_id")
+
+    # NOTA: La relación con Person de la nueva arquitectura se define solo desde Person.user
+    # para evitar conflictos con el modelo Person antiguo en modules/persons/models.py
+    # La relación unidireccional es suficiente para nuestros casos de uso
 
     # Relación de auditoría (usuario que actualizó)
     updated_by_user = relationship("User", remote_side=[id], foreign_keys=[updated_by])
