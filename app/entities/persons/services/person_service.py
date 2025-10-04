@@ -205,8 +205,8 @@ class PersonService:
         # Verificar que existe y está activa
         self.get_person_by_id(person_id)
 
-        # Aplicar reglas de negocio para eliminación
-        self._validate_deletion_rules(person_id)
+        # Aplicar reglas de negocio para eliminación (elimina usuario asociado si existe)
+        self._validate_deletion_rules(person_id, deleted_by)
 
         return self.repository.soft_delete_person(person_id, deleted_by)
 
@@ -675,11 +675,33 @@ class PersonService:
         from database import User
         return self.db.query(User).filter(User.email == email).first() is not None
 
-    def _validate_deletion_rules(self, person_id: int) -> None:
-        """Valida reglas de negocio para eliminación."""
-        # Aquí se pueden agregar reglas específicas de negocio
-        # Por ejemplo: no eliminar si tiene transacciones, etc.
-        pass
+    def _validate_deletion_rules(self, person_id: int, deleted_by: Optional[int] = None) -> None:
+        """
+        Valida reglas de negocio para eliminación.
+
+        Si la persona tiene un usuario asociado (creada con /persons/with-user),
+        también elimina el usuario con soft delete.
+        """
+        from datetime import datetime
+        from database import User
+
+        # Obtener la persona para verificar si tiene usuario asociado
+        person = self.repository.get_by_id(person_id)
+        if not person:
+            return
+
+        # Si la persona tiene usuario asociado, eliminarlo también
+        if person.user_id:
+            user = self.db.query(User).filter(User.id == person.user_id).first()
+            if user and not user.is_deleted:
+                # Soft delete del usuario
+                user.is_active = False
+                user.is_deleted = True
+                user.deleted_at = datetime.utcnow()
+                user.deleted_by = deleted_by
+                user.updated_by = deleted_by
+                user.updated_at = datetime.utcnow()
+                # No hacer commit aquí, será parte de la transacción del delete de Person
 
     # ==================== MÉTODOS DE MAPEO PARA COMPATIBILIDAD ====================
 

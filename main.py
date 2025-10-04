@@ -1,4 +1,5 @@
 from fastapi import FastAPI, HTTPException, Depends
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from pydantic import BaseModel
 from typing import Optional
@@ -34,6 +35,20 @@ app = FastAPI(
         {"name": "States", "description": "Gestión de estados/provincias"},
         {"name": "health", "description": "Estado del sistema"}
     ]
+)
+
+# Configurar CORS para webapp_demo
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "http://localhost:5500",  # Vanilla JS (Live Server)
+        "http://127.0.0.1:5500",
+        "http://localhost:3000",  # React
+        "http://127.0.0.1:3000"
+    ],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 # Configuración OAuth2 para Swagger
@@ -156,6 +171,20 @@ def get_current_user(db: Session = Depends(get_db), current_user_id: int = Depen
         "created_at": user.created_at,
         "updated_at": user.updated_at
     }
+
+@app.get("/users/roles", tags=["users"], summary="Obtener lista de roles disponibles")
+def get_user_roles():
+    """
+    Retorna la lista de roles disponibles en el sistema.
+    No requiere autenticación para permitir selección durante registro.
+    """
+    return [
+        {"id": 1, "name": "Admin", "description": "Administrador con acceso total"},
+        {"id": 2, "name": "Gerente", "description": "Gerente con acceso de gestión"},
+        {"id": 3, "name": "Colaborador", "description": "Colaborador con acceso limitado"},
+        {"id": 4, "name": "Lector", "description": "Usuario con acceso de solo lectura"},
+        {"id": 5, "name": "Guest", "description": "Invitado con acceso mínimo"}
+    ]
 
 @app.get("/users/{user_id}", tags=["users"], summary="Obtener usuario específico")
 def get_user(user_id: int, db: Session = Depends(get_db), current_user = Depends(require_manager_or_admin)):

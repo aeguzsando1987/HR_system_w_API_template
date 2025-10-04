@@ -41,7 +41,9 @@ class User(Base):
     # Campos de auditoría
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    deleted_at = Column(DateTime, nullable=True)  # Timestamp de eliminación lógica
     updated_by = Column(Integer, ForeignKey("users.id"), nullable=True)
+    deleted_by = Column(Integer, ForeignKey("users.id"), nullable=True)
 
     # Relación con entities (opcional) - especificando foreign_keys para evitar ambigüedad
     entities = relationship("ExampleEntity", back_populates="user", foreign_keys="ExampleEntity.user_id")
@@ -52,6 +54,8 @@ class User(Base):
 
     # Relación de auditoría (usuario que actualizó)
     updated_by_user = relationship("User", remote_side=[id], foreign_keys=[updated_by])
+    # Relación de auditoría (usuario que eliminó)
+    deleted_by_user = relationship("User", remote_side=[id], foreign_keys=[deleted_by])
 
 # Modelo ExampleEntity (plantilla para replicar)
 class ExampleEntity(Base):

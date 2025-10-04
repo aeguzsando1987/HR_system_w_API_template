@@ -93,8 +93,24 @@ Abrir en el navegador:
 - **ReDoc:** http://localhost:8001/redoc
 
 **Usuario Admin por Defecto:**
-- Email: `admin@bapta.com.mx`
+- Email: `admin@tuempresa.com`
 - Password: `root`
+
+---
+
+## WebApp Demo Funcional
+
+En la carpeta [webapp_demo/](../webapp_demo/) encontrarás aplicaciones web funcionales que consumen esta API:
+
+### Vanilla JS Demo (95% Completo)
+- Login con JWT y manejo de roles
+- CRUD completo de Personas con modales
+- Dual View Mode (Dashboard cards y Tabla)
+- Sistema de skills (backend listo)
+- 10 bugs corregidos durante desarrollo
+- Interfaz oscura con colores guindas (#8B1538)
+
+Ver [webapp_demo/README.md](../webapp_demo/README.md) para instrucciones de uso.
 
 ---
 
@@ -176,6 +192,7 @@ app/
 - `POST /users` - Crear usuario
 - `GET /users` - Listar usuarios
 - `GET /users/me` - Perfil actual
+- `GET /users/roles` - Lista de roles disponibles
 - `PUT /users/{id}` - Actualizar usuario
 - `DELETE /users/{id}` - Eliminar usuario
 
@@ -342,7 +359,6 @@ Al iniciar el servidor por primera vez, se cargan automáticamente:
 
 - **¿Cómo agregar una entidad?** → Ver [PATRON_DESARROLLO.md](PATRON_DESARROLLO.md)
 - **¿Cómo funciona la arquitectura?** → Ver [ADDING_ENTITIES.md](ADDING_ENTITIES.md)
-- **¿Estado actual del proyecto?** → Ver [CLAUDE.md](CLAUDE.md)
 - **¿Problemas con la instalación?** → Revisar logs en consola
 
 ---
@@ -353,6 +369,6 @@ Template libre para uso en proyectos personales y comerciales.
 
 ---
 
-**Última actualización:** 2025-10-02
+**Última actualización:** 2025-10-03
 **Versión:** 1.0.0
-**Estado:** Producción Ready
+**Estado:** Producción Ready + WebApp Demo Funcional

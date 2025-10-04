@@ -673,7 +673,17 @@ class PersonController:
             "status": person.status.value if person.status else "active",
             "is_active": person.is_active,
             "created_at": person.created_at,
-            "updated_at": person.updated_at
+            "updated_at": person.updated_at,
+            "country": {
+                "id": person.country.id,
+                "name": person.country.name,
+                "code": person.country.iso_code_3
+            } if person.country else None,
+            "state": {
+                "id": person.state.id,
+                "name": person.state.name,
+                "code": person.state.code
+            } if person.state else None
         }
 
     def _to_extended_response(self, person: Person) -> Dict[str, Any]:

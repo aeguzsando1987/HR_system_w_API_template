@@ -166,17 +166,21 @@ class PersonRepository(BaseRepository[Person]):
 
     def soft_delete_person(self, person_id: int, deleted_by: Optional[int] = None) -> bool:
         """
-        Soft delete manteniendo compatibilidad exacta.
+        Soft delete manteniendo compatibilidad exacta con auditoría completa.
         """
+        from datetime import datetime
+
         person = self.get_by_id(person_id)
         if not person:
             raise EntityNotFoundError("Person", person_id)
 
-        # Soft delete como en el módulo original
+        # Soft delete con campos de auditoría completos
         update_data = {
             'is_active': False,
             'is_deleted': True,
-            'updated_by': deleted_by
+            'deleted_at': datetime.utcnow(),
+            'deleted_by': deleted_by,
+            'updated_by': deleted_by  # También actualizar updated_by
         }
 
         self.update(person_id, update_data)
