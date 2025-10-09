@@ -22,17 +22,34 @@ from app.entities.persons.routers.person_router import router as new_persons_rou
 from app.entities.countries.routers.country_router import router as country_router
 from app.entities.states.routers.state_router import router as state_router
 
+# Importar routers del sistema HR
+from app.entities.business_groups.routers.business_group_router import router as business_group_router
+from app.entities.user_scopes.routers.user_scope_router import router as user_scope_router
+from app.entities.user_permissions.routers.user_permission_router import router as user_permission_router
+from app.entities.user_permissions.routers.admin_permissions_router import router as admin_permissions_router
+from app.entities.companies.routers.company_router import router as company_router
+
+# Importar modelos del sistema HR para crear tablas
+from app.entities.business_groups.models.business_group import BusinessGroup
+from app.entities.user_scopes.models.user_scope import UserScope
+from app.entities.user_permissions.models.user_permission import UserPermission
+from app.entities.companies.models.company import Company
+
 # Crear aplicación FastAPI con configuración de seguridad para Swagger
 app = FastAPI(
-    title=os.getenv("APP_NAME", "Simple FastAPI Template"),
+    title=os.getenv("APP_NAME", "HR System API"),
     version=os.getenv("VERSION", "1.0.0"),
     openapi_tags=[
         {"name": "auth", "description": "Operaciones de autenticación"},
         {"name": "users", "description": "Gestión de usuarios"},
         {"name": "examples", "description": "Entidades de ejemplo"},
-        {"name": "Persons", "description": "Gestión de personas"},
-        {"name": "Countries", "description": "Gestión de paises"},
-        {"name": "States", "description": "Gestión de estados/provincias"},
+        {"name": "Persons", "description": "Entidad de ejemplo de personas"},
+        {"name": "Countries", "description": "Para gestión de paises"},
+        {"name": "States", "description": "Para gestión de estados/provincias"},
+        {"name": "Business Groups", "description": "Gestión de grupos empresariales"},
+        {"name": "User Scopes", "description": "Gestión de permisos y scopes de usuarios"},
+        {"name": "User Permissions", "description": "Gestión de permisos granulares por endpoint"},
+        {"name": "Companies", "description": "Gestión de empresas dentro de grupos empresariales"},
         {"name": "health", "description": "Estado del sistema"}
     ]
 )
@@ -62,6 +79,13 @@ app.include_router(new_persons_router)
 # Incluir routers de entidades base
 app.include_router(country_router)
 app.include_router(state_router)
+
+# Incluir routers del sistema HR
+app.include_router(business_group_router)
+app.include_router(user_scope_router)
+app.include_router(user_permission_router)
+app.include_router(admin_permissions_router)
+app.include_router(company_router)
 
 # Modelos Pydantic para requests/responses
 class UserLogin(BaseModel):
@@ -134,7 +158,7 @@ def login(user_data: UserLogin, db: Session = Depends(get_db)):
 
 # Endpoints de usuarios
 @app.post("/users", tags=["users"], summary="Crear usuario")
-def create_user(user_data: UserCreate, db: Session = Depends(get_db), current_user = Depends(require_collaborator_or_better)):
+def create_user(user_data: UserCreate, db: Session = Depends(get_db)):
     # Verificar si el email ya existe
     if db.query(User).filter(User.email == user_data.email).first():
         raise HTTPException(status_code=400, detail="Email ya existe")

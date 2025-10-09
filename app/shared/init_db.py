@@ -12,6 +12,8 @@ from database import Base, engine
 from app.shared.data.countries_states_data import COUNTRIES_STATES_DATA
 from app.entities.countries.models.country import Country
 from app.entities.states.models.state import State
+from app.shared.seeds.business_groups_seed import seed_business_groups
+from app.shared.seeds.companies_seed import seed_companies
 
 
 def table_exists(table_name: str) -> bool:
@@ -80,6 +82,12 @@ def initialize_database(db: Session):
 
     print(f"Se crearon {countries_created} paises")
     print(f"Se crearon {states_created} estados/provincias/departamentos")
+
+    # 4. Cargar datos de Business Groups y Companies
+    print("\nCargando datos de Business Groups y Companies...")
+    seed_business_groups(db, created_by_user_id=1)
+    seed_companies(db, created_by_user_id=1)
+
     print("Inicializacion de base de datos completada")
 
 
