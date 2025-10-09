@@ -8,13 +8,20 @@
 - **Autenticación JWT** con OAuth2 integrado en Swagger
 - **BaseRepository Genérico** con TypeVar[T] reutilizable en todas las entidades
 - **Configuración Híbrida** - config.toml (público) + .env (secretos)
-- **3 Entidades Base Completas**:
-  - **Person** - Ejemplo completo con 40+ campos, skills JSONB, validaciones
-  - **Country** - Países con códigos ISO 3166 (3 países precargados)
-  - **State** - Estados/Provincias/Departamentos (114 precargados)
+- **HR Management System Completo** con 8 entidades:
+  - **BusinessGroups** - Grupos empresariales (COMPLETED ✅)
+  - **Companies** - Empresas dentro de grupos (COMPLETED ✅)
+  - **UserScopes** - Alcance organizacional por usuario (COMPLETED ✅)
+  - **UserPermissions** - Permisos granulares por endpoint (COMPLETED ✅)
+  - **Persons** - Ejemplo completo con 40+ campos, skills JSONB
+  - **Countries** - Países con códigos ISO 3166 (3 países precargados)
+  - **States** - Estados/Provincias/Departamentos (114 precargados)
+  - **Users** - Sistema de usuarios con roles
+- **Sistema Híbrido de Permisos** - 3 capas (Role + Scope + Permission)
+- **Auto-Discovery de Endpoints** - Detecta automáticamente nuevas rutas
 - **Soft Delete** y campos de auditoría en todas las entidades
 - **Inicialización Automática** de base de datos con datos geográficos
-- **Sistema de Roles** de 5 niveles (Admin, Gerente, Colaborador, Lector, Guest)
+- **Sistema de Roles** de 5 niveles (Admin, Gerente, Gestor, Colaborador, Guest)
 - **Tests Unitarios** incluidos
 - **Documentación Completa** con ejemplos paso a paso
 
@@ -187,6 +194,7 @@ app/
 
 ### Autenticación
 - `POST /token` - Obtener token JWT
+- `POST /login` - Login alternativo
 
 ### Usuarios
 - `POST /users` - Crear usuario
@@ -195,6 +203,42 @@ app/
 - `GET /users/roles` - Lista de roles disponibles
 - `PUT /users/{id}` - Actualizar usuario
 - `DELETE /users/{id}` - Eliminar usuario
+
+### BusinessGroups (✅ COMPLETED)
+- `POST /api/v1/business-groups` - Crear grupo empresarial
+- `GET /api/v1/business-groups` - Listar grupos
+- `GET /api/v1/business-groups/paginated` - Listar con paginación avanzada
+- `GET /api/v1/business-groups/search?name=` - Buscar por nombre
+- `GET /api/v1/business-groups/{id}` - Obtener por ID
+- `PUT /api/v1/business-groups/{id}` - Actualizar
+- `DELETE /api/v1/business-groups/{id}` - Eliminar (soft delete)
+
+### Companies (✅ COMPLETED)
+- `POST /api/v1/companies` - Crear empresa
+- `GET /api/v1/companies` - Listar empresas
+- `GET /api/v1/companies/paginated` - Listar con paginación avanzada
+- `GET /api/v1/companies/search?q=` - Buscar empresas
+- `GET /api/v1/companies/{id}` - Obtener por ID
+- `PUT /api/v1/companies/{id}` - Actualizar
+- `DELETE /api/v1/companies/{id}` - Eliminar (soft delete)
+
+### UserScopes (✅ COMPLETED)
+- `POST /api/v1/user-scopes` - Asignar alcance a usuario
+- `GET /api/v1/user-scopes` - Listar alcances
+- `GET /api/v1/user-scopes/by-user/{user_id}` - Alcances de un usuario
+- `GET /api/v1/user-scopes/{id}` - Obtener por ID
+- `PUT /api/v1/user-scopes/{id}` - Actualizar
+- `DELETE /api/v1/user-scopes/{id}` - Eliminar
+
+### UserPermissions (✅ COMPLETED)
+- `POST /api/v1/user-permissions` - Crear permiso
+- `GET /api/v1/user-permissions` - Listar permisos
+- `GET /api/v1/user-permissions/by-user/{user_id}` - Permisos de usuario
+- `GET /api/v1/user-permissions/{id}` - Obtener por ID
+- `PUT /api/v1/user-permissions/{id}` - Actualizar
+- `DELETE /api/v1/user-permissions/{id}` - Eliminar
+- `GET /api/v1/admin/permissions/endpoints` - Auto-discovery (lista todos los endpoints)
+- `PUT /api/v1/admin/permissions/bulk-update/{user_id}` - Actualización masiva (para app móvil)
 
 ### Persons (Ejemplo completo)
 - 25+ endpoints con CRUD, skills, búsquedas, cálculos
@@ -205,28 +249,75 @@ app/
 
 ---
 
-## Sistema de Permisos
+## Sistema de Permisos Híbrido (3 Capas)
 
-### Jerarquía de Roles
+El sistema implementa un modelo híbrido de permisos con 3 capas complementarias:
+
+### 1. Jerarquía de Roles (Capa Base)
 
 | Rol | Nivel | Descripción | Permisos |
 |-----|-------|-------------|----------|
-| Admin | 1 | Administrador | Acceso total |
+| Admin | 1 | Administrador | Acceso total al sistema |
 | Gerente | 2 | Manager | CRUD usuarios y entidades |
-| Colaborador | 3 | Collaborator | CRUD entidades |
-| Lector | 4 | Reader | Solo lectura |
-| Guest | 5 | Invitado | Acceso limitado |
+| Gestor | 3 | Gestor de área | CRUD entidades asignadas |
+| Colaborador | 4 | Collaborator | CRUD entidades limitadas |
+| Guest | 5 | Invitado | Solo lectura |
+
+### 2. UserScopes (Alcance Organizacional)
+
+Define el **alcance** de las operaciones de un usuario dentro de la jerarquía organizacional:
+
+| Scope | Descripción | Ejemplo |
+|-------|-------------|---------|
+| GLOBAL | Acceso a toda la organización | CEO, CFO |
+| BUSINESS_GROUP | Limitado a un grupo empresarial | Director de Grupo |
+| COMPANY | Limitado a una empresa | Gerente General |
+| BRANCH | Limitado a una sucursal | Gerente de Sucursal |
+| DEPARTMENT | Limitado a un departamento | Jefe de Departamento |
+
+**Ejemplo:**
+```python
+# Usuario: Juan Pérez
+# Role: Gerente (nivel 2)
+# Scope: COMPANY
+# Company ID: 5
+# → Puede gestionar SOLO empleados, departamentos, posiciones de la empresa ID=5
+```
+
+### 3. UserPermissions (Permisos Granulares)
+
+Permisos específicos por **endpoint** y **método HTTP**:
+
+```json
+{
+  "/api/v1/employees": {
+    "GET": true,
+    "POST": true,
+    "PUT": false,
+    "DELETE": false
+  },
+  "/api/v1/employees/with-user": {
+    "POST": false
+  }
+}
+```
+
+**Características:**
+- ✅ Auto-discovery: Detecta automáticamente nuevos endpoints
+- ✅ Bulk update: Actualización masiva desde app móvil
+- ✅ Validación híbrida: Verifica permiso específico + fallback a ruta base
+- ✅ Middleware automático: Valida permisos en cada request
 
 ### Usar en Endpoints
 
 ```python
 from app.shared.dependencies import get_current_user
 
-# Solo Admin
+# Validación por Role
 @router.delete("/recurso/{id}")
 def delete_recurso(current_user = Depends(get_current_user)):
-    if current_user.role != 1:
-        raise HTTPException(403, "Solo Admin")
+    if current_user.role > 2:  # Solo Admin y Gerente
+        raise HTTPException(403, "Permisos insuficientes")
 ```
 
 Ver **[PATRON_DESARROLLO.md](PATRON_DESARROLLO.md)** para ejemplos completos de autorización.
@@ -369,6 +460,7 @@ Template libre para uso en proyectos personales y comerciales.
 
 ---
 
-**Última actualización:** 2025-10-03
-**Versión:** 1.0.0
-**Estado:** Producción Ready + WebApp Demo Funcional
+**Última actualización:** 2025-10-09
+**Versión:** 2.0.0
+**Estado:** HR Management System - 4 entidades completadas (BusinessGroups, Companies, UserScopes, UserPermissions)
+**Repositorio:** [https://github.com/aeguzsando1987/HR_system_w_API_template.git](https://github.com/aeguzsando1987/HR_system_w_API_template.git)
