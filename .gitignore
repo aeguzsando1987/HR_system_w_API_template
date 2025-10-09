@@ -21,6 +21,7 @@ coverage.xml
 .hypothesis/
 .pytest_cache/
 cover/
+pytest.ini
 
 # Virtual Environments
 .env
@@ -78,6 +79,7 @@ secrets.json
 .secrets
 
 # Documentación interna (Control interno - NO SUBIR)
+.gitignore
 CLAUDE.md
 CLAUDE_OLD.md
 @CLAUDE.md

@@ -16,7 +16,8 @@ engine = create_engine(
     max_overflow=settings.db_max_overflow,
     pool_timeout=settings.db_pool_timeout,
     pool_recycle=settings.db_pool_recycle,
-    echo=settings.db_echo_sql  # Mostrar queries SQL en logs si está habilitado
+    echo=settings.db_echo_sql,  # Mostrar queries SQL en logs si está habilitado
+    connect_args={"client_encoding": "utf8"}  # Fix para Windows + psycopg2
 )
 
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
@@ -56,6 +57,12 @@ class User(Base):
     updated_by_user = relationship("User", remote_side=[id], foreign_keys=[updated_by])
     # Relación de auditoría (usuario que eliminó)
     deleted_by_user = relationship("User", remote_side=[id], foreign_keys=[deleted_by])
+
+    # Relación con UserScope (scopes asignados al usuario)
+    user_scopes = relationship("UserScope", back_populates="user", foreign_keys="UserScope.user_id")
+
+    # Relación con UserPermission (permisos granulares por endpoint)
+    permissions = relationship("UserPermission", back_populates="user", foreign_keys="UserPermission.user_id")
 
 # Modelo ExampleEntity (plantilla para replicar)
 class ExampleEntity(Base):

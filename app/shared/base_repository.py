@@ -184,6 +184,50 @@ class BaseRepository(Generic[T]):
 
         return True
 
+    def soft_delete(self, id: int, deleted_by: Optional[int] = None) -> Optional[T]:
+        """
+        Realiza un soft delete con auditoría completa.
+
+        Args:
+            id: ID de la entidad a eliminar
+            deleted_by: ID del usuario que realiza la eliminación
+
+        Returns:
+            La entidad eliminada o None si no existe
+
+        Ejemplo:
+            deleted_scope = repository.soft_delete(123, deleted_by=1)
+        """
+        db_obj = self.get_by_id(id)
+        if not db_obj:
+            return None
+
+        # Marcar como eliminado
+        if hasattr(db_obj, 'is_deleted'):
+            db_obj.is_deleted = True
+
+        # Marcar como inactivo también
+        if hasattr(db_obj, 'is_active'):
+            db_obj.is_active = False
+
+        # Registrar timestamp de eliminación
+        if hasattr(db_obj, 'deleted_at'):
+            from datetime import datetime
+            db_obj.deleted_at = datetime.utcnow()
+
+        # Registrar quién eliminó
+        if hasattr(db_obj, 'deleted_by') and deleted_by:
+            db_obj.deleted_by = deleted_by
+
+        # Actualizar timestamp general
+        if hasattr(db_obj, 'updated_at'):
+            from datetime import datetime
+            db_obj.updated_at = datetime.utcnow()
+
+        self.db.commit()
+        self.db.refresh(db_obj)
+        return db_obj
+
     # ==================== OPERACIONES AVANZADAS ====================
 
     def exists(self, id: int) -> bool:
