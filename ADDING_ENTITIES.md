@@ -4,7 +4,7 @@ Esta guía te muestra cómo agregar una nueva entidad (Alumno, Profesor, Departa
 
 ---
 
-## 🌍 Entidades Base Incluidas
+## Entidades Base Incluidas
 
 La plantilla ya incluye **3 entidades base** listas para usar:
 
@@ -32,7 +32,7 @@ División administrativa por país:
 
 ---
 
-## 📋 Resumen Rápido
+## Resumen Rápido
 
 Para agregar una entidad necesitas crear **7 archivos**:
 
@@ -52,7 +52,7 @@ Luego registrar el router en `main.py`.
 
 ---
 
-## 🎯 Ejemplo Práctico: Entidad "Department"
+## Ejemplo Práctico: Entidad "Department"
 
 Vamos a crear una entidad Department (Departamento) paso a paso.
 
@@ -455,7 +455,7 @@ CREATE INDEX idx_departments_code ON departments(code);
 
 ---
 
-## ✅ Verificar que Funciona
+## Verificar que Funciona
 
 1. **Reiniciar servidor**:
 ```bash
@@ -476,7 +476,7 @@ http://localhost:8001/docs
 
 ---
 
-## 🔥 Tips y Mejores Prácticas
+## Tips y Mejores Prácticas
 
 ### 1. Nombres de Campos Comunes
 Siempre incluir estos campos base:
@@ -538,7 +538,7 @@ students = relationship("Student", secondary=student_courses, back_populates="co
 
 ---
 
-## 📚 Ejemplos de Casos de Uso
+## Ejemplos de Casos de Uso
 
 ### Sistema Educativo
 - **Student** (relacionado a User)
@@ -561,7 +561,7 @@ students = relationship("Student", secondary=student_courses, back_populates="co
 
 ---
 
-## ❓ Preguntas Frecuentes
+## Preguntas Frecuentes
 
 **Q: ¿Cuándo usar Service vs Controller?**
 A: Service = lógica de negocio. Controller = orquestación y transformación a schemas Pydantic.
@@ -577,16 +577,16 @@ A: Ver `app/entities/persons/schemas/enums.py` como referencia.
 
 ---
 
-## 🎯 Resumen Final
+## Resumen Final
 
 Para agregar una nueva entidad:
 
-1. ✅ Crear 7 archivos (Model, Repository, Service, Controller, Router, Schemas, __init__)
-2. ✅ Seguir convenciones de nombres
-3. ✅ Usar BaseRepository para CRUD básico
-4. ✅ Registrar router en main.py
-5. ✅ Crear tabla en BD
-6. ✅ Probar en /docs
+1. Crear 7 archivos (Model, Repository, Service, Controller, Router, Schemas, __init__)
+2. Seguir convenciones de nombres
+3. Usar BaseRepository para CRUD básico
+4. Registrar router en main.py
+5. Crear tabla en BD
+6. Probar en /docs
 
 **Tiempo total**: 30-45 minutos por entidad básica.
 
