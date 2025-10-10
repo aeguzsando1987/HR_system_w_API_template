@@ -1,6 +1,6 @@
-# FastAPI Template - Plantilla Empresarial con Arquitectura de Capas
+# HR Management System - Sistema de Gestión de Recursos Humanos
 
-> Plantilla profesional FastAPI lista para proyectos empresariales con autenticación JWT, arquitectura de 7 capas y configuración híbrida.
+> Sistema completo de gestión de RRHH desarrollado con FastAPI, arquitectura de 7 capas y sistema híbrido de permisos. Basado en plantilla API empresarial.
 
 ## Características Principales
 
@@ -8,15 +8,16 @@
 - **Autenticación JWT** con OAuth2 integrado en Swagger
 - **BaseRepository Genérico** con TypeVar[T] reutilizable en todas las entidades
 - **Configuración Híbrida** - config.toml (público) + .env (secretos)
-- **HR Management System Completo** con 8 entidades:
-  - **BusinessGroups** - Grupos empresariales (COMPLETED ✅)
-  - **Companies** - Empresas dentro de grupos (COMPLETED ✅)
-  - **UserScopes** - Alcance organizacional por usuario (COMPLETED ✅)
-  - **UserPermissions** - Permisos granulares por endpoint (COMPLETED ✅)
-  - **Persons** - Ejemplo completo con 40+ campos, skills JSONB
-  - **Countries** - Países con códigos ISO 3166 (3 países precargados)
-  - **States** - Estados/Provincias/Departamentos (114 precargados)
-  - **Users** - Sistema de usuarios con roles
+- **HR Management System Completo** con 9 entidades principales:
+  - **BusinessGroups** - Grupos empresariales (✅ COMPLETED)
+  - **Companies** - Empresas dentro de grupos (✅ COMPLETED)
+  - **Branches** - Sucursales/Oficinas por empresa (✅ COMPLETED)
+  - **UserScopes** - Alcance organizacional por usuario (✅ COMPLETED)
+  - **UserPermissions** - Permisos granulares por endpoint (✅ COMPLETED)
+  - **Department** - Departamentos (jerarquía auto-referenciada) (⏳ PENDING)
+  - **Position** - Puestos de trabajo (⏳ PENDING)
+  - **Individual** - Personas (datos personales) (⏳ PENDING)
+  - **Employee** - Empleados (relación laboral) (⏳ PENDING)
 - **Sistema Híbrido de Permisos** - 3 capas (Role + Scope + Permission)
 - **Auto-Discovery de Endpoints** - Detecta automáticamente nuevas rutas
 - **Soft Delete** y campos de auditoría en todas las entidades
@@ -37,11 +38,11 @@
 
 ## Instalación Rápida
 
-### 1. Clonar/Copiar Template
+### 1. Clonar Repositorio
 
 ```bash
-git clone <url-del-repositorio> mi-nuevo-proyecto
-cd mi-nuevo-proyecto
+git clone https://github.com/aeguzsando1987/HR_system_w_API_template.git
+cd HR_system_w_API_template
 ```
 
 ### 2. Crear Ambiente Virtual
@@ -221,6 +222,16 @@ app/
 - `GET /api/v1/companies/{id}` - Obtener por ID
 - `PUT /api/v1/companies/{id}` - Actualizar
 - `DELETE /api/v1/companies/{id}` - Eliminar (soft delete)
+
+### Branches (✅ COMPLETED)
+- `POST /api/v1/branches/` - Crear sucursal
+- `GET /api/v1/branches/` - Listar sucursales
+- `GET /api/v1/branches/paginated` - Listar con paginación
+- `GET /api/v1/branches/search?q=` - Buscar sucursales
+- `GET /api/v1/branches/by-company/{company_id}` - Sucursales por empresa
+- `GET /api/v1/branches/{id}` - Obtener por ID
+- `PUT /api/v1/branches/{id}` - Actualizar
+- `DELETE /api/v1/branches/{id}` - Eliminar (soft delete)
 
 ### UserScopes (✅ COMPLETED)
 - `POST /api/v1/user-scopes` - Asignar alcance a usuario
@@ -460,7 +471,8 @@ Template libre para uso en proyectos personales y comerciales.
 
 ---
 
-**Última actualización:** 2025-10-09
-**Versión:** 2.0.0
-**Estado:** HR Management System - 4 entidades completadas (BusinessGroups, Companies, UserScopes, UserPermissions)
+**Última actualización:** 2025-10-10
+**Versión:** 2.1.0
+**Estado:** HR Management System - 5 entidades core completadas (BusinessGroups, Companies, Branches, UserScopes, UserPermissions). Siguiente: Department.
 **Repositorio:** [https://github.com/aeguzsando1987/HR_system_w_API_template.git](https://github.com/aeguzsando1987/HR_system_w_API_template.git)
+**Autor:** E. Guzman
