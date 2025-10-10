@@ -165,8 +165,15 @@ class Company(Base):
         foreign_keys=[deleted_by]
     )
 
-    # Nota: Las relaciones con Branch, Department, Position, Employee
-    # se definen desde esas entidades para evitar imports circulares
+    # Relaciones con entidades hijas (1 → N)
+    branches = relationship(
+        "Branch",
+        back_populates="company",
+        foreign_keys="Branch.company_id"
+    )
+
+    # Nota: Las relaciones con Department, Position, Employee
+    # se definen cuando esas entidades se implementen
 
     def __repr__(self):
         return f"<Company(id={self.id}, code='{self.code}', name='{self.name}', business_group_id={self.business_group_id})>"
