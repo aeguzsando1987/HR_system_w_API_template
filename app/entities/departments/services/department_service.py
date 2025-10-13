@@ -137,8 +137,7 @@ class DepartmentService:
             raise EntityAlreadyExistsError(
                 "Department",
                 "code",
-                data["code"],
-                f"El código '{data['code']}' ya existe para esta empresa"
+                data["code"]
             )
 
         # Agregar auditoría
@@ -326,8 +325,7 @@ class DepartmentService:
                 raise EntityAlreadyExistsError(
                     "Department",
                     "code",
-                    data["code"],
-                    f"El código '{data['code']}' ya existe para esta empresa"
+                    data["code"]
                 )
 
         # Agregar auditoría

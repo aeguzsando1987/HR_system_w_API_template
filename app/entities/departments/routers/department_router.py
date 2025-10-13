@@ -6,6 +6,7 @@ Endpoints REST API para gestión de Departments.
 from typing import List
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
+from sqlalchemy.exc import IntegrityError
 
 from database import get_db, User
 from auth import get_current_user
@@ -49,6 +50,15 @@ def create_department(
         raise HTTPException(status_code=404, detail=e.message)
     except BusinessRuleError as e:
         raise HTTPException(status_code=400, detail=e.message)
+    except IntegrityError as e:
+        db.rollback()
+        error_msg = str(e.orig) if hasattr(e, 'orig') else str(e)
+        if 'uq_company_department_code' in error_msg:
+            raise HTTPException(
+                status_code=409,
+                detail=f"Ya existe un departamento con el código '{department_data.code}' en esta empresa"
+            )
+        raise HTTPException(status_code=400, detail=f"Error de integridad en la base de datos: {error_msg}")
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -167,6 +177,16 @@ def update_department(
         raise HTTPException(status_code=409, detail=e.message)
     except BusinessRuleError as e:
         raise HTTPException(status_code=400, detail=e.message)
+    except IntegrityError as e:
+        db.rollback()
+        error_msg = str(e.orig) if hasattr(e, 'orig') else str(e)
+        if 'uq_company_department_code' in error_msg:
+            code = data.get('code', 'especificado')
+            raise HTTPException(
+                status_code=409,
+                detail=f"Ya existe un departamento con el código '{code}' en esta empresa"
+            )
+        raise HTTPException(status_code=400, detail=f"Error de integridad en la base de datos: {error_msg}")
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
