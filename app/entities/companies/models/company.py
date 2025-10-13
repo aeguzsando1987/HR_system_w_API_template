@@ -171,8 +171,13 @@ class Company(Base):
         back_populates="company",
         foreign_keys="Branch.company_id"
     )
+    departments = relationship(
+        "Department",
+        back_populates="company",
+        foreign_keys="Department.company_id"
+    )
 
-    # Nota: Las relaciones con Department, Position, Employee
+    # Nota: Las relaciones con Position, Employee
     # se definen cuando esas entidades se implementen
 
     def __repr__(self):
