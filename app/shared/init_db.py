@@ -16,6 +16,7 @@ from app.shared.seeds.business_groups_seed import seed_business_groups
 from app.shared.seeds.companies_seed import seed_companies
 from app.shared.seeds.branches_seed import seed_branches
 from app.shared.seeds.departments_seed import seed_departments
+from app.shared.seeds.positions_seed import seed_positions
 
 
 def table_exists(table_name: str) -> bool:
@@ -85,12 +86,13 @@ def initialize_database(db: Session):
     print(f"Se crearon {countries_created} paises")
     print(f"Se crearon {states_created} estados/provincias/departamentos")
 
-    # 4. Cargar datos de Business Groups, Companies, Branches y Departments
-    print("\nCargando datos de Business Groups, Companies, Branches y Departments...")
+    # 4. Cargar datos de Business Groups, Companies, Branches, Departments y Positions
+    print("\nCargando datos de Business Groups, Companies, Branches, Departments y Positions...")
     seed_business_groups(db, created_by_user_id=1)
     seed_companies(db, created_by_user_id=1)
     seed_branches(db, created_by_user_id=1)
     seed_departments(db, created_by_user_id=1)
+    seed_positions(db, created_by_user_id=1)
 
     print("Inicializacion de base de datos completada")
 
