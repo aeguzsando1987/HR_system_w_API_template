@@ -93,6 +93,9 @@ template_entities.md
 system_entities_specifications.md
 ADDING_ENTITIES.md
 DEPARTMENT_IMPLEMENTATION_STATUS.md
+INDIVIDUAL_FINAL_STATUS.md
+INDIVIDUAL_IMPLEMENTATION_COMPLETE.md
+
 
 # Archivos de desarrollo
 dev_*.py

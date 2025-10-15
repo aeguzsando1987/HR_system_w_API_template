@@ -17,6 +17,7 @@ from app.shared.seeds.companies_seed import seed_companies
 from app.shared.seeds.branches_seed import seed_branches
 from app.shared.seeds.departments_seed import seed_departments
 from app.shared.seeds.positions_seed import seed_positions
+from app.shared.seeds.individuals_seed import seed_individuals
 
 
 def table_exists(table_name: str) -> bool:
@@ -93,6 +94,7 @@ def initialize_database(db: Session):
     seed_branches(db, created_by_user_id=1)
     seed_departments(db, created_by_user_id=1)
     seed_positions(db, created_by_user_id=1)
+    seed_individuals(db, created_by_user_id=1)
 
     print("Inicializacion de base de datos completada")
 

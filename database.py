@@ -53,6 +53,9 @@ class User(Base):
     # para evitar conflictos con el modelo Person antiguo en modules/persons/models.py
     # La relación unidireccional es suficiente para nuestros casos de uso
 
+    # Relación con Individual (1:1) - Definida desde ambos lados para uso bidireccional
+    individual = relationship("Individual", back_populates="user", uselist=False, foreign_keys="Individual.user_id")
+
     # Relación de auditoría (usuario que actualizó)
     updated_by_user = relationship("User", remote_side=[id], foreign_keys=[updated_by])
     # Relación de auditoría (usuario que eliminó)
