@@ -32,6 +32,7 @@ from app.entities.branches.routers.branch_router import router as branch_router
 from app.entities.departments.routers.department_router import router as department_router
 from app.entities.positions.routers.position_router import router as position_router
 from app.entities.individuals.routers.individual_router import router as individual_router
+from app.entities.employees.routers.employee_router import router as employee_router
 
 # Importar modelos del sistema HR para crear tablas
 from app.entities.business_groups.models.business_group import BusinessGroup
@@ -42,6 +43,7 @@ from app.entities.branches.models.branch import Branch
 from app.entities.departments.models.department import Department
 from app.entities.positions.models.position import Position
 from app.entities.individuals.models.individual import Individual
+from app.entities.employees.models.employee import Employee
 
 # Crear aplicación FastAPI con configuración de seguridad para Swagger
 app = FastAPI(
@@ -61,7 +63,8 @@ app = FastAPI(
         {"name": "Branches", "description": "Gestión de sucursales de empresas"},
         {"name": "Departments", "description": "Gestión de departamentos organizacionales con jerarquía"},
         {"name": "Positions", "description": "Gestión de puestos/cargos con niveles jerárquicos"},
-    {"name": "Individuals", "description": "Gestión de personas físicas (con o sin usuario)"},
+        {"name": "Individuals", "description": "Gestión de personas físicas (con o sin usuario)"},
+        {"name": "Employees", "description": "Gestión de empleados (Individual + Employee + User opcional)"},
         {"name": "health", "description": "Estado del sistema"}
     ]
 )
@@ -102,6 +105,7 @@ app.include_router(branch_router)
 app.include_router(department_router)
 app.include_router(position_router)
 app.include_router(individual_router)
+app.include_router(employee_router)
 
 # Modelos Pydantic para requests/responses
 class UserLogin(BaseModel):

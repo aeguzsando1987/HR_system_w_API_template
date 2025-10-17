@@ -102,7 +102,7 @@ class Individual(Base):
     country = relationship("Country", back_populates="individuals", foreign_keys=[country_id])
     state = relationship("State", back_populates="individuals", foreign_keys=[state_id])
     user = relationship("User", back_populates="individual", uselist=False, foreign_keys=[user_id])
-    # employees = relationship("Employee", back_populates="individual", cascade="all, delete-orphan")  # TODO: Uncomment when Employee entity exists
+    employees = relationship("Employee", back_populates="individual", uselist=False, foreign_keys="Employee.individual_id")
 
     # ==================== CONSTRAINTS ====================
     __table_args__ = (

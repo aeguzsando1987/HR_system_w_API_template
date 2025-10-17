@@ -181,9 +181,11 @@ class Company(Base):
         back_populates="company",
         foreign_keys="Position.company_id"
     )
-
-    # Nota: La relacion con Employee
-    # se define cuando esa entidad se implemente
+    employees = relationship(
+        "Employee",
+        back_populates="company",
+        foreign_keys="Employee.company_id"
+    )
 
     def __repr__(self):
         return f"<Company(id={self.id}, code='{self.code}', name='{self.name}', business_group_id={self.business_group_id})>"

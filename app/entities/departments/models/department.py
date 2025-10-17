@@ -48,6 +48,9 @@ class Department(Base):
     parent = relationship("Department", remote_side=[id], back_populates="children", foreign_keys=[parent_id])
     children = relationship("Department", back_populates="parent", foreign_keys=[parent_id])
 
+    # Relationship with Employee
+    employees = relationship("Employee", back_populates="department", foreign_keys="Employee.department_id")
+
     # Constraints
     __table_args__ = (
         # Codigo unico por empresa

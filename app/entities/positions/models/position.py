@@ -71,8 +71,8 @@ class Position(Base):
     # Relaciones
     company = relationship("Company", back_populates="positions", foreign_keys=[company_id])
 
-    # Relación con Employee (pendiente implementación)
-    # employees = relationship("Employee", back_populates="position")
+    # Relación con Employee
+    employees = relationship("Employee", back_populates="position", foreign_keys="Employee.position_id")
 
     # Relaciones de auditoría
     creator = relationship("User", foreign_keys=[created_by])

@@ -134,8 +134,9 @@ class BusinessGroup(Base):
         foreign_keys=[deleted_by]
     )
 
-    # Nota: Las relaciones con Company y Employee se definen desde esas entidades
-    # para evitar imports circulares
+    # Relaciones con entidades hijas
+    companies = relationship("Company", back_populates="business_group", foreign_keys="Company.business_group_id")
+    employees = relationship("Employee", back_populates="business_group", foreign_keys="Employee.business_group_id")
 
     def __repr__(self):
         return f"<BusinessGroup(id={self.id}, name='{self.name}', tax_id='{self.tax_id}')>"

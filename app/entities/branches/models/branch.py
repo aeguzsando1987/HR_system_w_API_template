@@ -49,6 +49,7 @@ class Branch(Base):
     country = relationship("Country", foreign_keys=[country_id])
     state = relationship("State", foreign_keys=[state_id])
     departments = relationship("Department", back_populates="branch", foreign_keys="Department.branch_id")
+    employees = relationship("Employee", back_populates="branch", foreign_keys="Employee.branch_id")
 
     # Unique Constraint: code debe ser único por empresa
     __table_args__ = (
