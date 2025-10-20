@@ -14,10 +14,10 @@
   - **Branches** - Sucursales/Oficinas por empresa (✅ COMPLETED)
   - **UserScopes** - Alcance organizacional por usuario (✅ COMPLETED)
   - **UserPermissions** - Permisos granulares por endpoint (✅ COMPLETED)
-  - **Department** - Departamentos (jerarquía auto-referenciada) (⏳ PENDING)
-  - **Position** - Puestos de trabajo (⏳ PENDING)
-  - **Individual** - Personas (datos personales) (⏳ PENDING)
-  - **Employee** - Empleados (relación laboral) (⏳ PENDING)
+  - **Department** - Departamentos (jerarquía auto-referenciada) (✅ COMPLETED)
+  - **Position** - Puestos de trabajo con niveles jerárquicos (✅ COMPLETED)
+  - **Individual** - Personas (datos personales, 18 campos) (✅ COMPLETED)
+  - **Employee** - Empleados (relación laboral 1:1:1 con User e Individual) (✅ COMPLETED)
 - **Sistema Híbrido de Permisos** - 3 capas (Role + Scope + Permission)
 - **Auto-Discovery de Endpoints** - Detecta automáticamente nuevas rutas
 - **Soft Delete** y campos de auditoría en todas las entidades
@@ -141,12 +141,6 @@ Ver [webapp_demo/README.md](../webapp_demo/README.md) para instrucciones de uso.
    - Ejemplos con Person, Country, State
    - Checklist de implementación
 
-3. **[CLAUDE.md](CLAUDE.md)** - Estado del proyecto
-   - Progreso actual y entidades implementadas
-   - Problemas resueltos y soluciones
-   - Comandos útiles
-   - Próximos pasos
-
 ### Arquitectura del Proyecto
 
 ```
@@ -250,6 +244,47 @@ app/
 - `DELETE /api/v1/user-permissions/{id}` - Eliminar
 - `GET /api/v1/admin/permissions/endpoints` - Auto-discovery (lista todos los endpoints)
 - `PUT /api/v1/admin/permissions/bulk-update/{user_id}` - Actualización masiva (para app móvil)
+
+### Departments (✅ COMPLETED)
+- `POST /api/v1/departments/` - Crear departamento
+- `GET /api/v1/departments/` - Listar departamentos
+- `GET /api/v1/departments/paginated` - Listar con paginación
+- `GET /api/v1/departments/search?q=` - Buscar departamentos
+- `GET /api/v1/departments/by-company/{company_id}` - Departamentos por empresa
+- `GET /api/v1/departments/by-branch/{branch_id}` - Departamentos por sucursal
+- `GET /api/v1/departments/{id}` - Obtener por ID
+- `PUT /api/v1/departments/{id}` - Actualizar
+- `DELETE /api/v1/departments/{id}` - Eliminar (soft delete)
+
+### Positions (✅ COMPLETED)
+- `POST /api/v1/positions/` - Crear posición
+- `GET /api/v1/positions/` - Listar posiciones
+- `GET /api/v1/positions/search?q=` - Buscar posiciones
+- `GET /api/v1/positions/by-company/{company_id}` - Posiciones por empresa
+- `GET /api/v1/positions/{id}` - Obtener por ID
+- `PUT /api/v1/positions/{id}` - Actualizar
+- `DELETE /api/v1/positions/{id}` - Eliminar (soft delete)
+
+### Individuals (✅ COMPLETED)
+- `POST /api/v1/individuals/` - Crear individuo
+- `POST /api/v1/individuals/with-user` - Crear individuo con usuario (transacción atómica)
+- `GET /api/v1/individuals/` - Listar individuos
+- `GET /api/v1/individuals/search?q=` - Buscar individuos
+- `GET /api/v1/individuals/by-document?curp=&document_number=` - Buscar por documento
+- `GET /api/v1/individuals/{id}` - Obtener por ID
+- `PUT /api/v1/individuals/{id}` - Actualizar
+- `DELETE /api/v1/individuals/{id}` - Eliminar (soft delete)
+
+### Employees (✅ COMPLETED)
+- `POST /api/v1/employees/` - Crear empleado (con Individual existente)
+- `POST /api/v1/employees/with-user` - Crear Individual + User + Employee en transacción atómica
+- `GET /api/v1/employees/` - Listar empleados con paginación
+- `GET /api/v1/employees/search?q=` - Buscar por código, nombre, apellido o email
+- `GET /api/v1/employees/by-company/{company_id}` - Empleados por empresa
+- `GET /api/v1/employees/by-supervisor/{supervisor_id}` - Subordinados de un supervisor
+- `GET /api/v1/employees/{employee_id}` - Obtener por ID
+- `PUT /api/v1/employees/{employee_id}` - Actualizar empleado
+- `DELETE /api/v1/employees/{employee_id}` - Eliminar (soft delete)
 
 ### Persons (Ejemplo completo)
 - 25+ endpoints con CRUD, skills, búsquedas, cálculos
@@ -396,8 +431,7 @@ mi-proyecto/
 ├── requirements.txt          # Dependencias
 ├── README.md                 # Este archivo
 ├── PATRON_DESARROLLO.md      # Guía de desarrollo
-├── ADDING_ENTITIES.md        # Cómo agregar entidades
-└── CLAUDE.md                 # Estado del proyecto
+└── ADDING_ENTITIES.md        # Cómo agregar entidades
 ```
 
 ---
@@ -471,8 +505,8 @@ Template libre para uso en proyectos personales y comerciales.
 
 ---
 
-**Última actualización:** 2025-10-10
-**Versión:** 2.1.0
-**Estado:** HR Management System - 5 entidades core completadas (BusinessGroups, Companies, Branches, UserScopes, UserPermissions). Siguiente: Department.
+**Última actualización:** 2025-10-20
+**Versión:** 3.0.0
+**Estado:** HR Management System COMPLETO - 9/9 entidades implementadas y probadas. Sistema production-ready con 60+ endpoints.
 **Repositorio:** [https://github.com/aeguzsando1987/HR_system_w_API_template.git](https://github.com/aeguzsando1987/HR_system_w_API_template.git)
 **Autor:** E. Guzman
