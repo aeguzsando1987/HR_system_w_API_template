@@ -57,7 +57,9 @@ class EmployeeRepository(BaseRepository[Employee]):
         Returns:
             Lista de Employees
         """
-        query = self.db.query(Employee).filter(
+        from app.entities.individuals.models.individual import Individual
+
+        query = self.db.query(Employee).join(Individual).filter(
             Employee.company_id == company_id,
             Employee.is_deleted == False
         )
@@ -65,7 +67,7 @@ class EmployeeRepository(BaseRepository[Employee]):
         if active_only:
             query = query.filter(Employee.is_active == True)
 
-        return query.order_by(Employee.last_name, Employee.first_name).all()
+        return query.order_by(Individual.last_name, Individual.first_name).all()
 
     def get_by_branch(self, branch_id: int, active_only: bool = True) -> List[Employee]:
         """
@@ -78,7 +80,9 @@ class EmployeeRepository(BaseRepository[Employee]):
         Returns:
             Lista de Employees
         """
-        query = self.db.query(Employee).filter(
+        from app.entities.individuals.models.individual import Individual
+
+        query = self.db.query(Employee).join(Individual).filter(
             Employee.branch_id == branch_id,
             Employee.is_deleted == False
         )
@@ -86,7 +90,7 @@ class EmployeeRepository(BaseRepository[Employee]):
         if active_only:
             query = query.filter(Employee.is_active == True)
 
-        return query.order_by(Employee.last_name, Employee.first_name).all()
+        return query.order_by(Individual.last_name, Individual.first_name).all()
 
     def get_by_department(self, department_id: int, active_only: bool = True) -> List[Employee]:
         """
@@ -99,7 +103,9 @@ class EmployeeRepository(BaseRepository[Employee]):
         Returns:
             Lista de Employees
         """
-        query = self.db.query(Employee).filter(
+        from app.entities.individuals.models.individual import Individual
+
+        query = self.db.query(Employee).join(Individual).filter(
             Employee.department_id == department_id,
             Employee.is_deleted == False
         )
@@ -107,7 +113,7 @@ class EmployeeRepository(BaseRepository[Employee]):
         if active_only:
             query = query.filter(Employee.is_active == True)
 
-        return query.order_by(Employee.last_name, Employee.first_name).all()
+        return query.order_by(Individual.last_name, Individual.first_name).all()
 
     def get_by_supervisor(self, supervisor_id: int, active_only: bool = True) -> List[Employee]:
         """
@@ -120,7 +126,9 @@ class EmployeeRepository(BaseRepository[Employee]):
         Returns:
             Lista de Employees subordinados
         """
-        query = self.db.query(Employee).filter(
+        from app.entities.individuals.models.individual import Individual
+
+        query = self.db.query(Employee).join(Individual).filter(
             Employee.supervisor_id == supervisor_id,
             Employee.is_deleted == False
         )
@@ -128,7 +136,7 @@ class EmployeeRepository(BaseRepository[Employee]):
         if active_only:
             query = query.filter(Employee.is_active == True)
 
-        return query.order_by(Employee.last_name, Employee.first_name).all()
+        return query.order_by(Individual.last_name, Individual.first_name).all()
 
     def get_by_business_group(self, business_group_id: int, active_only: bool = True) -> List[Employee]:
         """
@@ -141,7 +149,9 @@ class EmployeeRepository(BaseRepository[Employee]):
         Returns:
             Lista de Employees
         """
-        query = self.db.query(Employee).filter(
+        from app.entities.individuals.models.individual import Individual
+
+        query = self.db.query(Employee).join(Individual).filter(
             Employee.business_group_id == business_group_id,
             Employee.is_deleted == False
         )
@@ -149,7 +159,7 @@ class EmployeeRepository(BaseRepository[Employee]):
         if active_only:
             query = query.filter(Employee.is_active == True)
 
-        return query.order_by(Employee.last_name, Employee.first_name).all()
+        return query.order_by(Individual.last_name, Individual.first_name).all()
 
     def get_by_employment_status(self, status: str, company_id: Optional[int] = None) -> List[Employee]:
         """
@@ -162,7 +172,9 @@ class EmployeeRepository(BaseRepository[Employee]):
         Returns:
             Lista de Employees
         """
-        query = self.db.query(Employee).filter(
+        from app.entities.individuals.models.individual import Individual
+
+        query = self.db.query(Employee).join(Individual).filter(
             Employee.employment_status == status,
             Employee.is_deleted == False
         )
@@ -170,7 +182,7 @@ class EmployeeRepository(BaseRepository[Employee]):
         if company_id:
             query = query.filter(Employee.company_id == company_id)
 
-        return query.order_by(Employee.last_name, Employee.first_name).all()
+        return query.order_by(Individual.last_name, Individual.first_name).all()
 
     def search(self, query_text: str, company_id: Optional[int] = None, limit: int = 50) -> List[Employee]:
         """

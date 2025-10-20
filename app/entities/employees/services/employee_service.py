@@ -412,8 +412,7 @@ class EmployeeService:
             raise EntityAlreadyExistsError(
                 "Employee",
                 "employee_code",
-                employee_code,
-                f"Ya existe un empleado con código '{employee_code}' en la Company {company_id}"
+                employee_code
             )
 
     def _validate_no_circular_supervisor(self, employee_id: Optional[int], supervisor_id: int) -> None:
